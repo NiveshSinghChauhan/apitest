@@ -14,7 +14,11 @@ Postgresql extension prerequisites
 
 ### [API DOCUMENTATION](./APIDocumentation.md)
 
-### To run this test
+### To run this
 
-* pip3 install -r requirements.txt.
-* python3 geoapi.py
+* pip install -r requirements.txt.
+* python geoapi.py
+
+### To run the tests for this
+
+* python test.py

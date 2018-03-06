@@ -1,11 +1,10 @@
 from flask import Flask, request, json
 from math import sin, cos, atan2, radians, sqrt
 import psycopg2
-from geopy.distance import great_circle
+
 
 connection = psycopg2.connect(dbname='postgres', user='postgres', password='123', host='localhost')
 app = Flask(__name__)
-
 
 # ============================ STAGE 1 ===================================================
 @app.route('/post_location', methods=['GET', 'POST'])
@@ -17,23 +16,27 @@ def Location():
     else:
         values = request.form.to_dict(flat=True)
     
-    cursor.execute("SELECT * FROM mapping WHERE key='IN/%s'"% (values['pincode']))
-    row = cursor.rowcount
+    try:
+        cursor.execute("SELECT * FROM mapping WHERE key='IN/%s'"% (values['pincode']))
+        row = cursor.rowcount
 
-    if not row:
-        if 'accuracy' in values:
-            query = "INSERT INTO mapping (key, place_name, admin_name1, latitude, longitude, accuracy) \
-            VALUES (IN/%s, %s, %s, %s, %s, %s)"% (values['pincode'], values['place_name'], values['admin_name'], values['latitude'], values['longitude'], values['accuracy'])
+        if not row:
+            if 'accuracy' in values:
+                query = "INSERT INTO mapping (key, place_name, admin_name1, latitude, longitude, accuracy) \
+                VALUES (IN/%s, %s, %s, %s, %s, %s)"% (values['pincode'], values['place_name'], values['admin_name'], values['latitude'], values['longitude'], values['accuracy'])
+            else:
+                query = "INSERT INTO mapping (key, place_name, admin_name1, latitude, longitude) \
+                VALUES ('IN/%s', '%s', '%s', '%s', '%s')"% (values['pincode'], values['address'], values['city'], values['latitude'], values['longitude'])
+
+            cursor.execute(query)
+            connection.commit()
+            
+            return 'New location added.'
         else:
-            query = "INSERT INTO mapping (key, place_name, admin_name1, latitude, longitude) \
-            VALUES ('IN/%s', '%s', '%s', '%s', '%s')"% (values['pincode'], values['address'], values['city'], values['latitude'], values['longitude'])
-
-        cursor.execute(query)
-        connection.commit()
+            return 'pincode already exist.'
+    except:
+        return 'Error, Required Popety are not given'
         
-        return 'New location added.'
-    else:
-        return 'pincode already exist.'
 
 
 @app.route('/get_location/<string:pincode>')

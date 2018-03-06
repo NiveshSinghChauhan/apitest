@@ -33,10 +33,18 @@ and one having name '*maps*' and having schema:
 
 after that import *mappings.csv* file in table mapping, And *maps.csv* file in table maps
 
+#### Change the [config.json](./config.json) file according to your database settings.
+config option are:
+
+- **DB_NAME** Name of the database eg. _postgres_
+- **DB_USER** User of the database eg. _postgres_
+- **DB_PASSWORD** Password of the database eg. _password123_
+- **HOST** host where the database id hosted eg. _localhost_
+
 ### To run this
 
 * pip install -r requirements.txt.
-* python geoapi.py
+* python [geoapi.py](./geoapi.py)
 
 ### To run the tests for this
 

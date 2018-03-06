@@ -3,8 +3,11 @@ from math import sin, cos, atan2, radians, sqrt
 import psycopg2
 
 
-connection = psycopg2.connect(dbname='postgres', user='postgres', password='123', host='localhost')
 app = Flask(__name__)
+
+app.config.from_json('config.json')
+
+connection = psycopg2.connect(dbname=app.config['DB_NAME'], user=app.config['DB_USER'], password=app.config['DB_PASSWORD'], host=app.config['HOST'])
 
 # ============================ STAGE 1 ===================================================
 @app.route('/post_location', methods=['GET', 'POST'])
